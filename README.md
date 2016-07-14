@@ -78,6 +78,49 @@ tar -zxvf <NAME>.tar.gz # or unzip ./assembly/target/metadata-distro-assembly-1.
 
 ```
 
+## Metadata Maven Plugin Usage:
+
+* Add the following to your maven pom to use this plugin as it will create for you the class and will require the schema.json to recreate your pojo.
+* Note: schemaurl should be set to file:///<FOLDER>/<NAME_OF_SCHEMA_FILE>.json. If you use classpath:... then it will look inside of the `/src/main/resources/`. 
+
+
+```xml
+
+<properties>
+<schemaurl>classpath:/schema.json</schemaurl>
+<classname>GeneratedCustomer</classname>
+<packagename>org.jboss.perspicuus.generated</packagename>
+</properties>
+
+....
+
+<build>
+<plugins>
+...
+<plugin>
+<groupId>org.jboss.perspicuus</groupId>
+<artifactId>metadata-maven-plugin</artifactId>
+<version>1.0.0-SNAPSHOT</version>
+<executions>
+<execution>
+<phase>process-resources</phase>
+<goals>
+<goal>codegen</goal>
+</goals>
+<configuration>
+<schemaurl>${schemaurl}</schemaurl>
+<classname>${classname}</classname>
+<packagename>${packagename}</packagename>
+</configuration>
+</execution>
+</executions>
+</plugin>
+...
+</plugins>
+</build>
+
+```
+
 
 ## Docker
 
