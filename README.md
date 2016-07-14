@@ -3,14 +3,14 @@
 This repository contains submodules so you will need to execute:
 
 ```
-git clone --recursive https://github.com/zmhassan/metadatapoc
+	git clone --recursive https://github.com/zmhassan/metadatapoc
 ```
 
 or
 
 ```
-git clone https://github.com/zmhassan/metadatapoc
-git sub module init
+	git clone https://github.com/zmhassan/metadatapoc
+	git sub module init
 ```
 
 ## Environment Variables:
@@ -20,7 +20,7 @@ git sub module init
 * Usage example:
 ```bash
 
-META_LOG_LOCATION=logs/analytics.log
+	META_LOG_LOCATION=logs/analytics.log
 
 ```
 
@@ -30,7 +30,7 @@ META_LOG_LOCATION=logs/analytics.log
 * Usage example:
 ```bash
 
-META_SCHEMA_LOCATION=/tmp/schema.json
+	META_SCHEMA_LOCATION=/tmp/schema.json
 
 ```
 
@@ -40,7 +40,7 @@ META_SCHEMA_LOCATION=/tmp/schema.json
 * Usage example:
 ```bash
 
-META_KAFKA_BROKERLIST="localhost:9092"
+	META_KAFKA_BROKERLIST="localhost:9092"
 
 ```
 
@@ -50,7 +50,7 @@ META_KAFKA_BROKERLIST="localhost:9092"
 * Usage example:
 ```bash
 
-DOCKER_HOST=tcp://<host>:2375
+	DOCKER_HOST=tcp://<host>:2375
 
 ```
 
@@ -59,9 +59,9 @@ DOCKER_HOST=tcp://<host>:2375
 ## Building from source
 
 ```
-mvn clean install -Prelease
-cd assembly/target
-tar -zxvf <NAME>.tar.gz # or unzip ./assembly/target/metadata-distro-assembly-1.0.0-SNAPSHOT-bin.zip
+	mvn clean install -Prelease
+	cd assembly/target
+	tar -zxvf <NAME>.tar.gz # or unzip ./assembly/target/metadata-distro-assembly-1.0.0-SNAPSHOT-bin.zip
 
 ```
 
@@ -86,38 +86,38 @@ tar -zxvf <NAME>.tar.gz # or unzip ./assembly/target/metadata-distro-assembly-1.
 
 ```xml
 
-<properties>
-<schemaurl>classpath:/schema.json</schemaurl>
-<classname>GeneratedCustomer</classname>
-<packagename>org.jboss.perspicuus.generated</packagename>
-</properties>
+		<properties>
+		   <schemaurl>classpath:/schema.json</schemaurl>
+		   <classname>GeneratedCustomer</classname>
+		   <packagename>org.jboss.perspicuus.generated</packagename>
+		</properties>
+		
+		....
 
-....
-
-<build>
-<plugins>
-...
-<plugin>
-<groupId>org.jboss.perspicuus</groupId>
-<artifactId>metadata-maven-plugin</artifactId>
-<version>1.0.0-SNAPSHOT</version>
-<executions>
-<execution>
-<phase>process-resources</phase>
-<goals>
-<goal>codegen</goal>
-</goals>
-<configuration>
-<schemaurl>${schemaurl}</schemaurl>
-<classname>${classname}</classname>
-<packagename>${packagename}</packagename>
-</configuration>
-</execution>
-</executions>
-</plugin>
-...
-</plugins>
-</build>
+		<build>
+		<plugins>
+			...
+			<plugin>
+			   <groupId>org.jboss.perspicuus</groupId>
+			   <artifactId>metadata-maven-plugin</artifactId>
+			   <version>1.0.0-SNAPSHOT</version>
+			   <executions>
+			      <execution>
+			         <phase>process-resources</phase>
+			         <goals>
+			            <goal>codegen</goal>
+			         </goals>
+			         <configuration>
+			            <schemaurl>${schemaurl}</schemaurl>
+			            <classname>${classname}</classname>
+			            <packagename>${packagename}</packagename>
+			         </configuration>
+			      </execution>
+			   </executions>
+			</plugin>
+			...
+		</plugins>
+		</build>
 
 ```
 
