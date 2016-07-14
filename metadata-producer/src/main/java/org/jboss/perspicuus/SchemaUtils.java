@@ -22,14 +22,20 @@ public class SchemaUtils {
 		return new SchemaUtils();
 	}
 
-	 
+	public static String fromEnv(String env, String defaultValue) {
+		try {
+			String envValue = System.getenv(env);
+			if (envValue != null)
+				return envValue;
+		} catch (Exception e) {
+			System.err.println("Make sure to set the " + env
+					+ " environment variable before running this program");
+		}
+		return null;
+	}
 
-	 
-	
-	
+	// export KAKFA_BROKER_LIST=192.168.99.100
 
-//	export KAKFA_BROKER_LIST=192.168.99.100
-	
 	/**
 	 * This code will go to the encoder side and will be removed from the main
 	 * application.
@@ -50,13 +56,15 @@ public class SchemaUtils {
 				mapper.constructType(Class.forName(className)), visitor);
 		JsonSchema jsonSchema = visitor.finalSchema();
 		String schema = mapper.writeValueAsString(jsonSchema);
-		SchemaUtils.sendMsgFromEnv("schemastream", mapper.writeValueAsString(jsonSchema));
+		SchemaUtils.sendMsgFromEnv("schemastream",
+				mapper.writeValueAsString(jsonSchema));
 		Files.write(new File(saveLocation).toPath(),
 				Collections.singletonList(schema));
 	}
-	
-	public static void sendMsgFromEnv(String topic, String message){
-		KafkaMessenger messenger = new KafkaMessenger("localhost:9092");
+
+	public static void sendMsgFromEnv(String topic, String message) {
+		KafkaMessenger messenger = new KafkaMessenger(SchemaUtils.fromEnv(
+				"META_KAFKA_BROKERLIST", "localhost:9092"));
 
 		try {
 			messenger.sendWithCallback(topic, message).get();

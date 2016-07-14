@@ -46,8 +46,8 @@ public class Application {
 		SchemaUtils.sendMsgFromEnv("customerstream", mapper.writeValueAsString(customerBean));
 
 		// This logic will be moved
-		SchemaUtils.persistSchema(CustomerBean.class.getCanonicalName(),
-				"/tmp/schema.json");
+		SchemaUtils.persistSchema(CustomerBean.class.getCanonicalName(), SchemaUtils.fromEnv("META_SCHEMA_LOCATION","/tmp/schema.json"));
+				//"/tmp/schema.json");
 
 		/*
 		 * Wow, that was tedious. If only the framework had done all that for me
@@ -55,4 +55,11 @@ public class Application {
 		 */
 	}
 
+
+	/**
+	 * By default returns the location to  /tmp/schema.json if environment variable is not set: 
+	 * @return
+	 */
+	
+	
 }
