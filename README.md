@@ -81,7 +81,7 @@ or
 ## Metadata Maven Plugin Usage:
 
 * Add the following to your maven pom to use this plugin as it will create for you the class and will require the schema.json to recreate your pojo.
-* Note: schemaurl should be set to file:///<FOLDER>/<NAME_OF_SCHEMA_FILE>.json. If you use classpath:... then it will look inside of the `/src/main/resources/`. 
+* Note: schemaurl should be set to file:///<FOLDER>/<NAME_OF_SCHEMA_FILE>.json. If you use classpath:... then it will look inside of the `/src/main/resources/`.
 
 
 ```xml
@@ -91,7 +91,7 @@ or
 		   <classname>GeneratedCustomer</classname>
 		   <packagename>org.jboss.perspicuus.generated</packagename>
 		</properties>
-		
+
 		....
 
 		<build>
@@ -124,7 +124,11 @@ or
 
 ## Docker
 
+Included in the root of the project you will find a docker-compose file which will spin up a kafka message broker with zookeeper running in docker containers for those interested in running this without installing many new technologies.
+
 ```
+docker-compose up -d
+docker-compose ps
 
 ```
 
