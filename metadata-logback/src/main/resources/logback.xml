@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<configuration debug="true" scan="true" scanPeriod="30 seconds">
+  <statusListener class="ch.qos.logback.core.status.OnConsoleStatusListener" />  
+
+	<appender name="FILE" class="ch.qos.logback.core.FileAppender">
+		<file>logs/analytics.log</file>
+
+		<encoder
+			class="net.logstash.logback.encoder.LoggingEventCompositeJsonEncoder">
+			<providers>
+				<message />
+				<arguments />
+			</providers>
+
+<!--  Custom xml provided for defining the schema.  -->
+			<schema>
+			<mode>infer_by_reflection</mode>
+			<output>file://some/place</output>
+		 		<type>object</type>
+				<id>urn:jsonschema:org:jboss:perspicuus:CustomerBean</id>
+				<properties>
+					<id>string</id>
+					<name>string</name>
+				</properties>
+			</schema>	
+			
+		
+		</encoder>
+	</appender>
+
+	<root level="DEBUG">
+	</root>
+
+	<logger name="org.jboss.perspicuus" level="DEBUG" additivity="false">
+		<appender-ref ref="FILE" />
+	</logger>
+
+</configuration>

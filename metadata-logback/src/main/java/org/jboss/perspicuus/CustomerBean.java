@@ -20,4 +20,5 @@ public class CustomerBean {
     public String getName() {
         return name;
     }
+ 
 }

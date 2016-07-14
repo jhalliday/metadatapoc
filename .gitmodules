@@ -1,0 +1,3 @@
+[submodule "logstash-logback-encoder"]
+	path = logstash-logback-encoder
+	url = https://github.com/zmhassan/logstash-logback-encoder
