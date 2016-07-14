@@ -1,0 +1,1 @@
+{"type":"object","id":"urn:jsonschema:org:jboss:perspicuus:CustomerBean","properties":{"id":{"type":"integer"},"name":{"type":"string"}}}
