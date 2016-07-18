@@ -1,0 +1,15 @@
+version: '2'
+
+services:
+  kafka:
+    image: bzcareer/docker-kafka
+    container_name: kafka-messaging-service
+    ports:
+      - "9092:9092"
+  zookeeper:
+    image: bzcareer/docker-zookeeper
+    container_name: zookeeper-coordination-service
+    ports:
+      - "2181:2181"
+      - "2888:2888"
+      - "3888:3888"
