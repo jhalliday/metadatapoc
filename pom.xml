@@ -15,7 +15,7 @@
 				<activeByDefault>true</activeByDefault>
 			</activation>
 			<modules>
-				<module>logstash-logback-encoder</module>
+                <!--<module>logstash-logback-encoder</module>-->
 				<module>kafka-utils</module>
 				<module>metadata-maven-plugin</module>
 		        <module>avro-processing</module>
@@ -26,7 +26,7 @@
 		<profile>
 			<id>release</id>
 			<modules>
-				<module>logstash-logback-encoder</module>
+                <!-- <module>logstash-logback-encoder</module>-->
 				<module>kafka-utils</module>
 				<module>metadata-maven-plugin</module>
 		        <module>avro-processing</module>
