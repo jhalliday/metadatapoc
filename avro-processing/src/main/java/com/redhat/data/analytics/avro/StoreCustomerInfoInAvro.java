@@ -1,7 +1,8 @@
-package com.redhat.data.analytics;
+package com.redhat.data.analytics.avro;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 
 import org.apache.avro.Schema;
 import org.apache.avro.file.DataFileReader;
@@ -14,11 +15,12 @@ import org.apache.avro.io.DatumWriter;
 import org.apache.avro.specific.SpecificDatumReader;
 
 import com.redhat.data.analytics.generated.GeneratedCustomerBean;
+import com.redhat.data.analytics.utils.AvroUtils;
 
 
 public class StoreCustomerInfoInAvro {
+  private static final String CUSTOMER_AVRO = "customer.avro";
   Schema schema;
-  String avroSchemaFileName = "customer.avro";
 
   public StoreCustomerInfoInAvro() throws IOException {
     schema =
@@ -33,10 +35,8 @@ public class StoreCustomerInfoInAvro {
     GenericRecord customer3 = createCustomer("Justin", 3);
 
     // Serialize users
-    File file = new File(avroSchemaFileName);
-    DatumWriter<GenericRecord> datumWriter = new GenericDatumWriter<GenericRecord>(schema);
-    DataFileWriter<GenericRecord> dataFileWriter = new DataFileWriter<GenericRecord>(datumWriter);
-    dataFileWriter.create(schema, file);
+    DataFileWriter<GenericRecord> dataFileWriter =
+        AvroUtils.createDataFileWriter(CUSTOMER_AVRO, schema);
     dataFileWriter.append(customer1);
     dataFileWriter.append(customer2);
     dataFileWriter.append(customer3);
@@ -46,6 +46,7 @@ public class StoreCustomerInfoInAvro {
 
   }
 
+
   private GenericRecord createCustomer(String name, int id) {
     GenericRecord cust = new GenericData.Record(schema);
     cust.put("name", name);
@@ -54,11 +55,7 @@ public class StoreCustomerInfoInAvro {
   }
 
   public void deserialize() throws IOException {
-    File file = new File(avroSchemaFileName);
-    DatumReader<GeneratedCustomerBean> customerDR =
-        new SpecificDatumReader<GeneratedCustomerBean>(GeneratedCustomerBean.class);
-    DataFileReader<GeneratedCustomerBean> dataFR =
-        new DataFileReader<GeneratedCustomerBean>(file, customerDR);
+    DataFileReader<GeneratedCustomerBean> dataFR = AvroUtils.createDataFileReader(CUSTOMER_AVRO, GeneratedCustomerBean.class);//.createDataFileReader<GeneratedCustomerBean.class>( CUSTOMER_AVRO, GeneratedCustomerBean.class);
     GeneratedCustomerBean customer = null;
     while (dataFR.hasNext()) {
       customer = dataFR.next(customer);
