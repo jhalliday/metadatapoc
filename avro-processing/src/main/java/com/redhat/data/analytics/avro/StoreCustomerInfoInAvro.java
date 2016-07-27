@@ -17,7 +17,11 @@ import org.apache.avro.specific.SpecificDatumReader;
 import com.redhat.data.analytics.generated.GeneratedCustomerBean;
 import com.redhat.data.analytics.utils.AvroUtils;
 
-
+/**
+ * Demonstrating storage of avro schema using genericRecord class with avro schema.
+ * 
+ * @author Zak Hassan <zak.hassan@redhat.com>
+ */
 public class StoreCustomerInfoInAvro {
   private static final String CUSTOMER_AVRO = "customer.avro";
   Schema schema;
@@ -33,6 +37,8 @@ public class StoreCustomerInfoInAvro {
     GenericRecord customer1 = createCustomer("Steve", 1);
     GenericRecord customer2 = createCustomer("Jeff", 2);
     GenericRecord customer3 = createCustomer("Justin", 3);
+    GenericRecord customer4 = createCustomer("Harry", 4);
+    GenericRecord customer5 = createCustomer("George", 5);
 
     // Serialize users
     DataFileWriter<GenericRecord> dataFileWriter =
@@ -40,6 +46,8 @@ public class StoreCustomerInfoInAvro {
     dataFileWriter.append(customer1);
     dataFileWriter.append(customer2);
     dataFileWriter.append(customer3);
+    dataFileWriter.append(customer4);
+    dataFileWriter.append(customer5);
     dataFileWriter.close();
     // Done!
     System.out.println("SUCCESS: Parsed Avro");
@@ -55,7 +63,8 @@ public class StoreCustomerInfoInAvro {
   }
 
   public void deserialize() throws IOException {
-    DataFileReader<GeneratedCustomerBean> dataFR = AvroUtils.createDataFileReader(CUSTOMER_AVRO, GeneratedCustomerBean.class);//.createDataFileReader<GeneratedCustomerBean.class>( CUSTOMER_AVRO, GeneratedCustomerBean.class);
+    DataFileReader<GeneratedCustomerBean> dataFR =
+        AvroUtils.createDataFileReader(CUSTOMER_AVRO, GeneratedCustomerBean.class);
     GeneratedCustomerBean customer = null;
     while (dataFR.hasNext()) {
       customer = dataFR.next(customer);

@@ -1,4 +1,4 @@
-package com.bzcareer.producer;
+package com.redhat.analytics.producer;
 
 import org.apache.kafka.clients.producer.Callback;
 import org.apache.kafka.clients.producer.RecordMetadata;

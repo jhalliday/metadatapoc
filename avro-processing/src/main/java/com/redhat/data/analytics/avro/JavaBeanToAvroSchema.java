@@ -14,6 +14,11 @@ import com.fasterxml.jackson.dataformat.avro.schema.AvroSchemaGenerator;
 import com.redhat.data.analytics.model.CustomerBean;
 import com.redhat.data.analytics.utils.SchemaUtils;
 
+/**
+ * Demonstrating conversion of normal java pojo infer the avro schema for the pojo.
+ * 
+ * @author Zak Hassan <zak.hassan@redhat.com>
+ */
 public class JavaBeanToAvroSchema {
 
   public JavaBeanToAvroSchema() {
@@ -21,7 +26,7 @@ public class JavaBeanToAvroSchema {
     try {
       // You can also choose to use the class name to generate your schema if the class doesn't yet
       // exist.
-      // For example: toAvroSchema("com.redhat.data.analytics.model.CustomerBean");
+      // For example: SchemaUtils.toAvroSchema("com.redhat.data.analytics.model.CustomerBean");
       Schema avroSchema = SchemaUtils.toAvroSchema(CustomerBean.class);
       String asJson = avroSchema.toString(true);
     

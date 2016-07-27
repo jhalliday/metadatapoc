@@ -1,6 +1,8 @@
 package org.jboss.perspicuus;
 
 import java.io.File;
+import java.io.IOException;
+import java.net.MalformedURLException;
 import java.nio.file.Files;
 import java.util.Map;
 import java.util.function.Function;
@@ -57,8 +59,7 @@ public class Application {
 		 */
 
 		try {
-			Stream<GeneratedCustomer> customers = SchemaUtils.newInstance()
-					.streamFromSchema(records, "customer");
+			Stream<GeneratedCustomer> customers = streamFromSchema(records, "customer");
 			customers.forEach(System.out::println);
 
 		} catch (Exception e2) {
@@ -70,6 +71,35 @@ public class Application {
 		 */
 
 	}
+
+
+    /**
+     * This will remain here and will be made to be more generic so anyone can
+     * generate a class with a given json schema file.
+     * 
+     * @param records
+     * @param schemaUri
+     * @param genClassName
+     * @param gPkgName
+     * @return
+     * @throws MalformedURLException
+     * @throws IOException
+     */
+    public static Stream<GeneratedCustomer> streamFromSchema(
+            Stream<Map<String, Object>> records, String schemaKey)
+            throws MalformedURLException, IOException {
+
+        ObjectMapper mapper = new ObjectMapper();
+        Stream<GeneratedCustomer> customers = records
+                .map(new Function<Map<String, Object>, GeneratedCustomer>() {
+                    @Override
+                    public GeneratedCustomer apply(Map<String, Object> record) {
+                        return mapper.convertValue(record.get(schemaKey),
+                                GeneratedCustomer.class);
+                    }
+                });
+        return customers;
+    }
 
 	/**
 	 * By default returns the location to  logs/analytics.log if environment variable is not set: 
