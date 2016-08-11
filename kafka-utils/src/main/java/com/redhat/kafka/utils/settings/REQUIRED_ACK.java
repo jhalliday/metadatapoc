@@ -1,4 +1,4 @@
-package com.bzcareer.producer;
+package com.redhat.kafka.utils.settings;
 
 /**
  * Note: Its best to choose REPLICA_ACK if your using replication.

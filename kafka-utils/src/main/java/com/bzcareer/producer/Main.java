@@ -2,6 +2,8 @@ package com.bzcareer.producer;
 
 import java.util.concurrent.ExecutionException;
 
+import com.redhat.analytics.producer.KafkaMessenger;
+
 public class Main {
 
 	public static void main(String[] args) {

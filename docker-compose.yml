@@ -6,6 +6,10 @@ services:
     container_name: kafka-messaging-service
     ports:
       - "9092:9092"
+    links:
+      - zookeeper
+    environment:
+      - ZK_KAFKA_URLS=192.168.99.100
   zookeeper:
     image: bzcareer/docker-zookeeper
     container_name: zookeeper-coordination-service
@@ -13,3 +17,22 @@ services:
       - "2181:2181"
       - "2888:2888"
       - "3888:3888"
+  mongo:
+    image: mongo
+    container_name: mongo
+    volumes:
+      - /data/db:/data/db
+    ports:
+      - "27017:27017"
+  metaui:
+    build:
+      context: ./metaregistry-webui/
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+  jaxrsws:
+    build:
+      context: ./jaxrs/
+      dockerfile: Dockerfile
+    ports:
+      - "18080:18080"
