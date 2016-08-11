@@ -1,6 +1,8 @@
-.PHONY : build image
+.PHONY : build image push
 
 build:
 	mvn clean install
 image:
-		docker   build  --rm -t  redhat/docker-metadata-registry-ws  .
+	./build.container.sh
+push:
+	./push.docker-registry.sh

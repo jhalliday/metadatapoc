@@ -4,5 +4,5 @@ AUTHOR="Zak Hassan <zak.hassan@redhat.com>"
 
 
 echo   " Building ..."
-docker   build  --rm -t  redhat/docker-metadata-registry-ws  .
+sudo docker   build  --rm -t  metadata-registry-rest  .
 echo   " Done .."
