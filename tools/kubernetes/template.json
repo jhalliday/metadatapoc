@@ -1,0 +1,238 @@
+{
+    "kind": "Template",
+    "apiVersion": "v1",
+    "metadata": {
+        "name": "metadata-registry-api",
+        "annotations": {
+            "description": "Metadata Registry application Angular.JS/Wildfly/MongoDB database",
+            "tags": "quickstart,nodejs,mongodb",
+            "iconClass": "icon-nodejs"
+        }
+    },
+    "labels": {
+        "template": "metadata-registry-api"
+    },
+    "objects": [{
+        "kind": "ImageStream",
+        "apiVersion": "v1",
+        "metadata": {
+            "name": "origin-mregistry-rest",
+            "creationTimestamp": null
+        },
+        "spec": {},
+        "status": {
+            "dockerImageRepository": ""
+        }
+    }, {
+        "kind": "Service",
+        "apiVersion": "v1",
+        "metadata": {
+            "name": "metadata-registry-web-ui",
+            "labels": {
+                "application": "metadata-registry-web-ui"
+            },
+            "annotations": {
+                "description": "This is a bundle of microservices which each interact with the application."
+            }
+        },
+        "spec": {
+            "type": "LoadBalancer",
+            "ports": [{
+                "name": "metadata-ui",
+                "port": 8080,
+                "targetPort": 8080
+            }, {
+                "name": "metadata-rest",
+                "port": 18080,
+                "targetPort": 18080
+            }, {
+                "name": "metadata-mongodb",
+                "port": 27017,
+                "targetPort": 27017
+            }, {
+                "name": "zk-client-port",
+                "port": 2181,
+                "targetPort": 2181
+            }, {
+                "name": "zk-peer-port",
+                "port": 2888,
+                "targetPort": 2888
+            }, {
+                "name": "zk-server-entry-port",
+                "port": 3888,
+                "targetPort": 3888
+            }, {
+                "name": "kf-messaging-port",
+                "port": 9092,
+                "targetPort": 9092
+            }],
+            "selector": {
+                "name": "metadata-registry"
+            }
+        }
+    }, {
+        "kind": "DeploymentConfig",
+        "apiVersion": "v1",
+        "metadata": {
+            "name": "${DATABASE_SERVICE_NAME}",
+            "annotations": {
+                "description": "Defines how to deploy the database"
+            }
+        },
+        "spec": {
+            "strategy": {
+                "type": "Recreate"
+            },
+            "replicas": 1,
+            "selector": {
+                "name": "${DATABASE_SERVICE_NAME}"
+            },
+            "template": {
+                "metadata": {
+                    "name": "${DATABASE_SERVICE_NAME}",
+                    "labels": {
+                        "name": "${DATABASE_SERVICE_NAME}"
+                    }
+                },
+                "spec": {
+                    "containers": [{
+                        "name": "mongodb",
+                        "image": " ",
+                        "ports": [{
+                            "containerPort": 27017
+                        }],
+                        "env": [{
+                            "name": "MONGODB_USER",
+                            "value": "${DATABASE_USER}"
+                        }, {
+                            "name": "MONGODB_PASSWORD",
+                            "value": "${DATABASE_PASSWORD}"
+                        }, {
+                            "name": "MONGODB_DATABASE",
+                            "value": "${DATABASE_NAME}"
+                        }, {
+                            "name": "MONGODB_ADMIN_PASSWORD",
+                            "value": "${DATABASE_ADMIN_PASSWORD}"
+                        }],
+                        "readinessProbe": {
+                            "timeoutSeconds": 1,
+                            "initialDelaySeconds": 3,
+                            "exec": {
+                                "command": ["/bin/sh", "-i", "-c", "mongo 127.0.0.1:27017/$MONGODB_DATABASE -u $MONGODB_USER -p $MONGODB_PASSWORD --eval=\"quit()\""]
+                            }
+                        },
+                        "livenessProbe": {
+                            "timeoutSeconds": 1,
+                            "initialDelaySeconds": 30,
+                            "tcpSocket": {
+                                "port": 27017
+                            }
+                        },
+                        "resources": {
+                            "limits": {
+                                "memory": "${MEMORY_MONGODB_LIMIT}"
+                            }
+                        },
+                        "volumeMounts": [{
+                            "name": "${DATABASE_SERVICE_NAME}",
+                            "mountPath": "/var/lib/mongodb/data"
+                        }]
+                    }],
+                    "volumes": [{
+                        "name": "${DATABASE_SERVICE_NAME}",
+                        "emptyDir": {
+                            "medium": ""
+                        }
+                    }]
+                }
+            }
+        }
+    }
+, {
+        "kind": "BuildConfig",
+        "apiVersion": "v1",
+        "metadata": {
+            "name": "metadataregistryrestbc",
+            "annotations": {
+                "description": "Defines how to build the application"
+            }
+        },
+        "spec": {
+            "source": {
+                "type": "Git",
+                "git": {
+                    "uri": "${SOURCE_REPOSITORY_URL}"
+                },
+                "env": [{
+                    "name": "MONGO_HOST",
+                    "value": "mongo.192.168.64.8.xip.io"
+                }]
+            },
+            "strategy": {
+                "type": "Source",
+                "sourceStrategy": {
+                    "from": {
+                      "kind": "DockerImage",
+                      "name": "openshift/wildfly-100-centos7:latest"
+                    }
+                }
+            },
+            "output": {
+                "to": {
+                    "kind": "ImageStreamTag",
+                    "name": "origin-mregistry-rest:latest"
+                }
+            }
+        }
+    }],
+    "parameters": [{
+            "name": "DATABASE_SERVICE_NAME",
+            "displayName": "Database Service Name",
+            "required": true,
+            "value": "metadataregistrymongodb"
+        }, {
+            "name": "DATABASE_USER",
+            "displayName": "MongoDB Username",
+            "description": "Username for MongoDB user that will be used for accessing the database.",
+            "generate": "expression",
+            "from": "user[A-Z0-9]{3}"
+        }, {
+            "name": "DATABASE_PASSWORD",
+            "displayName": "MongoDB Password",
+            "description": "Password for the MongoDB user.",
+            "generate": "expression",
+            "from": "[a-zA-Z0-9]{16}"
+        }, {
+            "name": "DATABASE_NAME",
+            "displayName": "Database Name",
+            "value": "metaregistry"
+        }, {
+            "name": "DATABASE_ADMIN_PASSWORD",
+            "displayName": "Database Administrator Password",
+            "description": "Password for the database admin user.",
+            "generate": "expression",
+            "from": "[a-zA-Z0-9]{16}"
+        }, {
+            "name": "SOURCE_REPOSITORY_URL",
+            "description": "The URL of the repository with your application source code",
+            "value": "https://github.com/zmhassan/metadata-registry-rest.git"
+        }, {
+            "name": "MEMORY_LIMIT",
+            "displayName": "Memory Limit",
+            "description": "Maximum amount of memory the container can use.",
+            "value": "512Mi"
+        }, {
+            "name": "MEMORY_MONGODB_LIMIT",
+            "displayName": "Memory Limit",
+            "description": "Maximum amount of memory the container can use.",
+            "value": "512Mi"
+        },
+        {
+            "name": "NAMESPACE",
+            "displayName": "Namespace",
+            "description": "The OpenShift Namespace where the ImageStream resides.",
+            "value": "openshift"
+        }
+    ],
+    "message": "You can connect to the database using MongoDB connection URL mongodb://${MONGODB_USER}:${MONGODB_PASSWORD}@${DATABASE_SERVICE_NAME}/${MONGODB_DATABASE}"
+}
