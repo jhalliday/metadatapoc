@@ -16,12 +16,13 @@ TEMPLATE=metadata-registry-api
 
 # Clean up old template or pods that could be running from env.
 echo "Removing and refreshing template"
-oc deploy $TEMPLATE --cancel
+#oc deploy $TEMPLATE --cancel
 oc delete all -l template=metadata-registry-api,openshift.io/deployment-config.name=metaregistry
-oc delete dc $TEMPLATE
-oc delete template $TEMPLATE
+oc delete dc metaregistry
+oc delete template metadata-registry-api
+oc delete template kafka-messaging-service
 oc create -f metadata-template.json
-
+oc create -f kafka.template.json
 
 # Pull Docker Images required by template:
 # SET MINISHIFT ENVIRONMENT VARIABLES:
@@ -34,10 +35,14 @@ oc create -f metadata-template.json
 # docker pull docker.io/openshift/mongodb-24-centos7 metadata-registry-api
 
 
+# Deploy Spark:
+#oc process -f spark-template.yaml SPARK_IMAGE=docker.io/metadatapoc/spark:latest MASTER_NAME=spark-master-data WORKER_NAME=spark-worker-data   | oc create -f  -
+
 
 # Run processor and deploy the template:
 echo "Processing template metadata registry INSTALLATION:"
-oc process -f metadata-template.json   DATABASE_SERVICE_NAME=metaregistry |    oc create -f -
+oc process -f metadata-template.json   METADATA_SERVICE_NAME=metaregistry |    oc create -f -
+oc create -f kafka.template.json KUBE_SERVICE_NAME=kafka-service MESSAGING_SERVICE_NAME=kafka-node | oc create -f -
 
 #Skipping the build for now. Start the build so you get the latest image built from source:
 #oc start-build metadataregistryrestbc -n oshinko --follow
