@@ -179,10 +179,8 @@ To install the templates to easily setup project:
 oc create -f kafka.template.json
 oc create -f spark-template.json
 oc create -f metadata-template.json
-
+```
 Steps:
 
 - Click add project
 - Fill in the details.
-- We will deploy some more pods while we wait for it to deploy.
-```
