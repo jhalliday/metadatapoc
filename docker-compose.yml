@@ -26,13 +26,17 @@ services:
       - "27017:27017"
   metaui:
     build:
-      context: ./metaregistry-webui/
+      context: ../metadata-registry-web-ui
       dockerfile: Dockerfile
     ports:
       - "8080:8080"
   jaxrsws:
     build:
-      context: ./jaxrs/
+      context: ../metadata-registry-rest
       dockerfile: Dockerfile
     ports:
       - "18080:18080"
+    links:
+      - mongo:mongo
+    environment:
+      - METADATA_REGISTRY_WEB_UI_PORT_27017_TCP_ADDR=mongo
