@@ -1,3 +1,9 @@
 [submodule "logstash-logback-encoder"]
 	path = logstash-logback-encoder
 	url = https://github.com/zmhassan/logstash-logback-encoder
+[submodule "jaxrs"]
+	path = jaxrs
+	url = https://github.com/zmhassan/metadata-registry-rest.git
+[submodule "metadata-registry-web-ui"]
+	path = metadata-registry-web-ui
+	url = https://github.com/zmhassan/metadata-registry-web-ui.git

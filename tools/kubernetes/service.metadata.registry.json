@@ -1,0 +1,48 @@
+{
+    "kind": "Service",
+    "apiVersion": "v1",
+    "metadata": {
+        "name": "metadata-registry-web-ui",
+        "labels": {
+            "application": "metadata-registry-web-ui"
+        },
+        "annotations": {
+            "description": "This is a bundle of microservices which each interact with the application."
+        }
+    },
+    "spec": {
+        "type": "LoadBalancer",
+        "ports": [{
+            "name": "metadata-ui",
+            "port": 8080,
+            "targetPort": 8080
+        },{
+          "name": "metadata-rest",
+          "port": 18080,
+          "targetPort":18080
+          }, {
+            "name": "metadata-mongodb",
+            "port": 27017,
+            "targetPort": 27017
+        }, {
+            "name": "zk-client-port",
+            "port": 2181,
+            "targetPort": 2181
+        }, {
+            "name": "zk-peer-port",
+            "port": 2888,
+            "targetPort": 2888
+        }, {
+            "name": "zk-server-entry-port",
+            "port": 3888,
+            "targetPort": 3888
+        }, {
+            "name": "kf-messaging-port",
+            "port": 9092,
+            "targetPort": 9092
+        }],
+        "selector": {
+            "name": "metadata-registry"
+        }
+    }
+}

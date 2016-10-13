@@ -1,0 +1,70 @@
+{
+	"apiVersion": "v1",
+	"kind": "Pod",
+	"metadata": {
+		"name": "metadata-registry",
+		"labels": {
+			"name": "metadata-registry",
+			"application": "metadata-registry-spark"
+		}
+	},
+	"spec": {
+		"containers": [
+			{
+			"name": "metadata-web-ui",
+			"image": "docker.io/metadatapoc/metadata-registry-web-ui",
+			"ports": [{
+				"containerPort": 8080
+			}]
+		},
+		{
+			"name": "metadata-rest-api",
+			"image": "docker.io/metadatapoc/metadata-registry-rest",
+			"env":[
+				{
+					"name":"MONGODB_USER",
+					"value":"admin"
+				},
+				{
+					"name":"MONGODB_PASSWORD",
+					"value":"admin"
+				},
+				{
+					"name":"MONGODB_DATABASE",
+					"value":"metaregistry"
+				}
+			],
+			"ports": [{
+					"containerPort": 18080
+			},{
+					"containerPort":9990
+				}]
+		},
+		{
+			"name": "metadata-database",
+			"image": "docker.io/centos/mongodb-32-centos7",
+			"env":
+			[{
+				"name":"MONGODB_USER",
+				"value":"admin"
+			},
+			{
+				"name":"MONGODB_PASSWORD",
+				"value":"admin"
+			},
+			{
+				"name":"MONGODB_DATABASE",
+				"value":"metaregistry"
+			},
+			{
+				"name":"MONGODB_ADMIN_PASSWORD",
+				"value":"admin"
+			}
+		],
+	    "ports": [
+			 {
+			     "containerPort": 27017
+			 }]
+			}]
+	}
+}
